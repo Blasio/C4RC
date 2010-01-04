@@ -1,6 +1,9 @@
 *~
 *.swp
 *.ncb
+*.suo
+*.user
 *.o
 *.obj
 *.exe
+
