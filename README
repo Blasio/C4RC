@@ -1,0 +1,10 @@
+This is an attempt at extending the existing COD4 RCON by adding features such as:
+
+- Remote reading of chat logs
+- User command triggers
+- More granular control on voting
+- Auto-kick on excessive bad language
+- Server message looping
+- And anything else we can think up along the way.
+
+Another thing we'll be trying to achieve is to transmit this data using minimal bandwidth, such that one could permanenly run a monitor on a mobile device without incurring excessive costs (mobile data here is charged at extortionate prices).
