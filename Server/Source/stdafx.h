@@ -13,3 +13,5 @@
 
 
 // TODO: reference additional headers your program requires here
+#define WINDOWS_LEAN_AND_MEAN
+#include <windows.h>
