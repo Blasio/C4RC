@@ -6,4 +6,5 @@
 *.o
 *.obj
 *.exe
-
+Server/Debug/*
+Server/Release/*
