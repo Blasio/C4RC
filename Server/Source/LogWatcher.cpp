@@ -35,10 +35,14 @@ int LogWatcher::Update()
 	// If there are no new bytes, just bail out.
 	if (iNewBytes == 0) return(0);
 
+	// Update our cursor and restore stream position
+	m_LogCursor += iNewBytes;
+	m_LogFile.seekg(-iNewBytes, ios::end);
+
 	// Read in new characters and append to our buffer string
 	char * tBuf = new char[iNewBytes];
 	m_LogFile.read(tBuf, iNewBytes);
-	strBuffer += tBuf;
+	strBuffer += string(tBuf,iNewBytes);
 	delete [] tBuf;
 
 	// TODO: This should be number of new events, not number of new bytes
