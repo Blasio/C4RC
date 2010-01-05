@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <list>
 
 namespace LogWatching {
 
@@ -11,7 +12,7 @@ namespace LogWatching {
 	class Event {
 	public:
 		Event(EventTypes EventType, int ClientID, wstring PlayerName, wstring ArgString);
-		Event(wstring LogLine);
+		Event(string LogLine);
 	private:
 		EventTypes m_Type;
 		int m_iClientID;
@@ -36,7 +37,7 @@ namespace LogWatching {
 		wstring m_strFileName;
 		ifstream m_LogFile;
 		int m_LogCursor;
-		
+		list<Event *> m_Events;
 	};
 
 }

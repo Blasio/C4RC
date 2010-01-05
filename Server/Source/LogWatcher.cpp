@@ -6,7 +6,7 @@ using namespace LogWatching;
 LogWatcher::LogWatcher(wstring fName)
 {
 	// Open Log file
-	m_LogFile.open(fName.c_str());
+	m_LogFile.open(fName.c_str(), ios::binary);
 
 	// Throw a fit if file is not open
 	if (!m_LogFile.is_open()) throw std::runtime_error("LogWatcher::LogWatcher(): Could not open log file");
@@ -45,6 +45,39 @@ int LogWatcher::Update()
 	strBuffer += string(tBuf,iNewBytes);
 	delete [] tBuf;
 
-	// TODO: This should be number of new events, not number of new bytes
-	return (iNewBytes);
+	// Break new bytes read into lines and parse each line
+	// into an event object (or try to at least)
+	int iNewEvents = 0;
+	while(true)
+	{
+		// Is there a CRLF in the log?  If yes then
+		// parse this line.
+		int iNextCRLF = strBuffer.find("\015\012");
+		if (iNextCRLF == string::npos) break;
+		string strLine = strBuffer.substr(0, iNextCRLF);
+
+		// Crop used part of the buffer
+		strBuffer = strBuffer.substr(iNextCRLF+2);
+		
+		// Try parsing this event.  If successful, add it to the list
+		// and count, otherwise do nothing.
+		try
+		{
+			Event * tEv = new Event(strLine);
+			m_Events.push_back(tEv);
+			iNewEvents++;
+		}
+		catch (std::runtime_error & e)
+		{
+		
+		};
+		
+	}
+
+	return (iNewEvents);
+}
+
+Event::Event(std::string LogLine)
+{
+	
 }
