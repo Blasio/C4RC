@@ -7,12 +7,19 @@ namespace LogWatching {
 
 	using namespace std;
 
-	enum EventTypes {etJoin, etLeave, etSay, etCMD, etMIN = etJoin, etMAX=etCMD};
+	enum EventTypes {etUnsupported, etJoin, etLeave, etSay, etCMD, etMIN = etUnsupported, etMAX=etCMD};
 	
 	class Event {
 	public:
 		Event(EventTypes EventType, int ClientID, wstring PlayerName, wstring ArgString);
 		Event(string LogLine);
+
+		// Getter methods
+		EventTypes get_EventType(){return m_Type;};
+		int get_ClientID(){if (etUnsupported!=m_Type) return m_iClientID;throw std::runtime_error("Event::get_ClientID(): Unknown Event Type");};
+		string get_PlayerName(){if (etUnsupported!=m_Type) return m_strPlayerName;throw std::runtime_error("Event::get_PlayerName(): Unknown Event Type");};
+		string get_StringArg(){if (etUnsupported!=m_Type) return m_strArgString;throw std::runtime_error("Event::get_StringArg(): Unknown Event Type");};
+
 	private:
 		EventTypes m_Type;
 		int m_iClientID;
