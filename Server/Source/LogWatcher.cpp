@@ -1,5 +1,12 @@
 #include "stdafx.h"
+
+#include <vector>
+#include <sstream>
+
+using namespace std;
+
 #include "LogWatcher.h"
+#include "Support.h"
 
 using namespace LogWatching;
 
@@ -77,7 +84,43 @@ int LogWatcher::Update()
 	return (iNewEvents);
 }
 
-Event::Event(std::string LogLine)
+
+Event::Event(std::string LogLine): m_Type(etUnsupported), m_iClientID(-1)
 {
+	// Log Entry formats are
+	//
+	// Join:
+	// [ T]TT\+:SS J;32CharGUID;ClientID;Name
+	//
+	// Leave:
+	// [ T]TT\+:SS Q;32CharGUID;ClientID;Name
+	//
+	// Say:
+	// [ T]TT\+:SS say;32CharGUID;ClientID;Name;^UText Message Here
 	
+	// Split line into Timestamp and entry portions. Start looking for
+	// ' ' from position 1 since we can have a leading space in the line
+	int iSplitPoint = LogLine.find(' ', 1);
+	
+	if ((iSplitPoint == string::npos) || (iSplitPoint < 1))
+		throw std::runtime_error("Event::Event(): Malformed Log Line");
+
+	string strTimeStamp = LogLine.substr(0, iSplitPoint);
+	string strEntry = LogLine.substr(iSplitPoint+1);
+
+	// Split Entry part of line along ';'
+	vector<string>vsTokens;
+	Tokenize(strEntry, vsTokens, ";");
+
+	stringstream ss(vsTokens[2]);
+
+	if (vsTokens[0]=="J")
+	{
+		// Join Token found. Copy the rest of the tokens as required
+		this->m_Type = etJoin;
+		ss >> this->m_iClientID;
+		this->m_strPlayerName = vsTokens[3];
+	}
+
+
 }

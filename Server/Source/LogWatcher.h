@@ -11,7 +11,7 @@ namespace LogWatching {
 	
 	class Event {
 	public:
-		Event(EventTypes EventType, int ClientID, wstring PlayerName, wstring ArgString);
+		// Constructors
 		Event(string LogLine);
 
 		// Getter methods
@@ -23,8 +23,8 @@ namespace LogWatching {
 	private:
 		EventTypes m_Type;
 		int m_iClientID;
-		wstring m_strPlayerName;
-		wstring m_strArgString;
+		string m_strPlayerName;
+		string m_strArgString;
 	};
 
 
