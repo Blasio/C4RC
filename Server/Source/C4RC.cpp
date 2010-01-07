@@ -3,26 +3,47 @@
 
 #include "stdafx.h"
 #include "LogWatcher.h"
+#include <list>
 
 using namespace LogWatching;
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	string LogEntry1(" 99:34 J;0123456789abcdef0123456789abcdef;0;Player Name Here");
-	string LogEntry2("199:23 J;0123456789abcdef0123456789abcdef;1;Unknown Soldier");
-	string LogEntry3("2689:04 J;0123456789abcdef0123456789abcdef;2;A Noob");
+	// List of Test Log Entries
+	list<string>TestEntries;
 
-	Event * Ev1 = new Event(LogEntry1);
-	Event * Ev2 = new Event(LogEntry2);
-	Event * Ev3 = new Event(LogEntry3);
+	// Fill up the list.  Some Joins here.
+	TestEntries.push_back(string(" 99:34 J;0123456789abcdef0123456789abcdef;0;Player Name Here"));
+	TestEntries.push_back(string("199:23 J;0123456789abcdef0123456789abcdef;1;Unknown Soldier"));
+	TestEntries.push_back(string("2689:04 J;0123456789abcdef0123456789abcdef;2;A Noob"));
 
-	cout << "Event Type: " << Ev1->get_EventType() << ", Client ID: " << Ev1->get_ClientID();
-	cout << ", Name: " << Ev1->get_PlayerName() << ", String=" << Ev1->get_StringArg() << endl;
-	cout << "Event Type: " << Ev2->get_EventType() << ", Client ID: " << Ev2->get_ClientID();
-	cout << ", Name: " << Ev2->get_PlayerName() << ", String=" << Ev2->get_StringArg() << endl;
-	cout << "Event Type: " << Ev3->get_EventType() << ", Client ID: " << Ev3->get_ClientID();
-	cout << ", Name: " << Ev3->get_PlayerName() << ", String=" << Ev3->get_StringArg() << endl;
+	// Some Quit/Leave events here.
+	TestEntries.push_back(string("335:23 Q;0123456789abcdef0123456789abcdef;0;Player Name Here"));
+	TestEntries.push_back(string("244:21 Q;0123456789abcdef0123456789abcdef;1;Unknown Soldier"));
+	TestEntries.push_back(string("2989:43 Q;0123456789abcdef0123456789abcdef;2;A Noob"));
+
+	// Some Insults here.
+	TestEntries.push_back(string("112:00 say;0123456789abcdef0123456789abcdef;0;Player Name Here;\026U mur l'hemm noob!"));
+	TestEntries.push_back(string("115:21 say;0123456789abcdef0123456789abcdef;1;Unknown Soldier;\026Noob int mela jIEn"));
+	TestEntries.push_back(string("122:14 say;0123456789abcdef0123456789abcdef;5;|<rb jkage;^1I killed the Turnip and all I got was this lousy T-Shirt."));
+
+	// A couple of commands.
+	TestEntries.push_back(string("115:21 say;0123456789abcdef0123456789abcdef;1;Unknown Soldier;\026!NEXTMAP"));
+	TestEntries.push_back(string("122:14 say;0123456789abcdef0123456789abcdef;5;|<rb jkage;\026!NOMINATE mp_Haus TDM"));
+
+
+	// Convert each event and print it out here
+	for (list<string>::iterator it = TestEntries.begin(); it != TestEntries.end(); ++it)
+	{
+		Event * Ev = new Event(*it);
+
+		cout << "Event Type: " << Ev->get_EventType() << ", Client ID: " << Ev->get_ClientID();
+		cout << ", Name: " << Ev->get_PlayerName() << ", String=" << Ev->get_StringArg() << endl;
+
+		delete Ev;
+	}
+
 
 	//LogWatcher m_LogWatcher(L"C:\\Program Files (x86)\\Activision\\Call of Duty 4 - Modern Warfare\\Mods\\ModWarfare\\games_mp.log");
 
