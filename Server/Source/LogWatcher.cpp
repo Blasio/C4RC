@@ -119,6 +119,25 @@ Event::Event(std::string LogLine): m_Type(etUnsupported), m_iClientID(-1)
 		this->m_iClientID = strtol(vsTokens[2].c_str(), NULL, 10);
 		this->m_strPlayerName = vsTokens[3];
 	}
+	else if (vsTokens[0]=="Q")
+	{
+		// Leave Token found. Copy the rest of the tokens as required
+		this->m_Type = etLeave;
+		this->m_iClientID = strtol(vsTokens[2].c_str(), NULL, 10);
+		this->m_strPlayerName = vsTokens[3];
+	}
+	else if (vsTokens[0]=="say")
+	{
+		// Say Token found.  This is either normal speech or an attempt
+		// at triggering a command.  Look for ! as 2nd character in string.
+		// NOTE: 1st character is either ^U or a colour code in all say entries.
+		this->m_strArgString = vsTokens[4];
+		if (this->m_strArgString.substr(1,1)=="!")
+			this->m_Type = etCMD;
+		else
+			this->m_Type = etSay;
 
-
+		this->m_iClientID = strtol(vsTokens[2].c_str(), NULL, 10);
+		this->m_strPlayerName = vsTokens[3];
+	}
 }
