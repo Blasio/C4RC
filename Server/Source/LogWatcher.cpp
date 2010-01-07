@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include <vector>
-#include <sstream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -112,13 +112,11 @@ Event::Event(std::string LogLine): m_Type(etUnsupported), m_iClientID(-1)
 	vector<string>vsTokens;
 	Tokenize(strEntry, vsTokens, ";");
 
-	stringstream ss(vsTokens[2]);
-
 	if (vsTokens[0]=="J")
 	{
 		// Join Token found. Copy the rest of the tokens as required
 		this->m_Type = etJoin;
-		ss >> this->m_iClientID;
+		this->m_iClientID = strtol(vsTokens[2].c_str(), NULL, 10);
 		this->m_strPlayerName = vsTokens[3];
 	}
 
