@@ -40,6 +40,10 @@ namespace LogWatching {
 		const Event * CurrentEvent();
 
 	private:
+		// Copy constructor & assignment operators here
+		// so that class will not be copyable.
+		LogWatcher(const LogWatcher& x);
+		LogWatcher& operator=(const LogWatcher& x);
 
 		wstring m_strFileName;
 		ifstream m_LogFile;
