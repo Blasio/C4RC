@@ -78,17 +78,14 @@ int LogWatcher::Update()
 		
 		// Try parsing this event.  If successful, add it to the list
 		// and count, otherwise do nothing.
-		try
+		Event * tEv = new Event(strLine);
+		if (tEv->get_EventType() != etUnsupported)
 		{
-			Event * tEv = new Event(strLine);
 			m_Events.push_back(tEv);
 			iNewEvents++;
 		}
-		catch (std::runtime_error & e)
-		{
-		
-		};
-		
+		else
+			delete tEv;
 	}
 
 	return (iNewEvents);
