@@ -26,6 +26,16 @@ LogWatcher::LogWatcher(wstring fName)
 
 LogWatcher::~LogWatcher()
 {
+	
+	// Flush any unhandled events left
+	for (list<Event*>::iterator it=m_Events.begin(); it!=m_Events.end(); ++it)
+	{
+			delete *it;
+	}
+
+	m_Events.clear();
+
+	// Close log file if it's open
 	if (m_LogFile.is_open())
 		m_LogFile.close();
 }
