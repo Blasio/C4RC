@@ -32,12 +32,18 @@ namespace LogWatching {
 	class LogWatcher
 	{
 	public:
+		// Standard Constructor & Destructor
 		LogWatcher(wstring fName);
 		~LogWatcher();
 
+		// Check log file for changes, return number of new events detected
 		int Update();
-		bool MoveToNextEvent();
-		const Event * CurrentEvent();
+
+		// Move cursor to next event in list (delete old head of list).  Return true if cursor is pointing to an event
+		bool MoveToNextEvent() { if (m_Events.empty()) return false; delete m_Events.front(); m_Events.pop_front(); return (!m_Events.empty());};
+
+		// Get event pointed to by cursor (or NULL if no events in list).
+		Event * CurrentEvent() { if (!m_Events.empty()) return m_Events.front();return NULL; };
 
 	private:
 		// Copy constructor & assignment operators here

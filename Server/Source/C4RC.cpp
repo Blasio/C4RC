@@ -45,16 +45,22 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 
-	//LogWatcher m_LogWatcher(L"C:\\Program Files (x86)\\Activision\\Call of Duty 4 - Modern Warfare\\Mods\\ModWarfare\\games_mp.log");
+	LogWatcher m_LogWatcher(L"C:\\Program Files (x86)\\Activision\\Call of Duty 4 - Modern Warfare\\Mods\\ModWarfare\\games_mp.log");
 
-	//Sleep(1000);
+	Sleep(1000);
 
-	//for (int i=0; i<100; i++)
-	//{
-	//	if (m_LogWatcher.Update() > 0)
-	//		wcout << L"More Bytes" << endl;
-	//	Sleep(100);
-	//}
+	for (int i=0; i<10000; i++)
+	{
+		if (m_LogWatcher.Update() > 0)
+		{
+			do
+			{
+				Event * Ev = m_LogWatcher.CurrentEvent();
+				cout << Ev->get_PlayerName() << ": " << Ev->get_EventType() << " " << Ev->get_StringArg() << endl;
+			} while (m_LogWatcher.MoveToNextEvent());
+		}
+		Sleep(100);
+	}
 
 	return 0;
 }
