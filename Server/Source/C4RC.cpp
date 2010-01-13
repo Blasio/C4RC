@@ -73,9 +73,26 @@ int _tmain(int argc, _TCHAR* argv[])
 	cin >> strPassword;
 	Executor m_Ex("localhost", 28960, strPassword);
 	m_Ex.Say("Test Message from Console");
-	Sleep(1000);
+	Sleep(500);
 	m_Ex.Say("And another one here with ^1C^2o^3l^4o^5u^6r^7.");
-
+	Sleep(500);
+	m_Ex.Tell(1, "Hello ^1NewUser^7. Welcome to the server.");
+	Sleep(500);
+	m_Ex.Kick("jKage");
+	Sleep(500);
+	m_Ex.Kick("Cheater", true);
+	Sleep(500);
+	m_Ex.Kick(33);
+	Sleep(500);
+	m_Ex.ChangeMap("mp_haus");
+	Sleep(500);
+	m_Ex.ChangeGameType("dm");
+	Sleep(500);
+	m_Ex.RestartRound(false);
+	Sleep(500);
+	m_Ex.MapRotate();
+	Sleep(500);
+	m_Ex.RestartRound(true);
 	return 0;
 }
 

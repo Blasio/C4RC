@@ -14,16 +14,15 @@ namespace Execution {
 		// Action methods.  Each of these methods executes one or more
 		// RCON commands on the game server
 		void Say(string strMessage);
-		void Tell(string strPlayer, string strMessage);
+		void Tell(int iClientID, string strMessage);
 
-		void Kick(string strPlayer);
+		void Kick(string strPlayer){ Kick(strPlayer, false); };
 		void Kick(string strPlayer, bool bTempBan);
 		void Kick(int iClientID);
-		void Kick(int iClientID, bool bTempBan);
 
 		void ChangeMap(string strMapName);
 		void ChangeGameType(string strGameType);
-		void RestartRound(void);
+		void RestartRound(bool bFastRestart);
 		void MapRotate(void);
 
 	private:
