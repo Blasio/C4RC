@@ -31,6 +31,10 @@ namespace Execution {
 		Executor(const Executor & x);
 		Executor& operator=(const Executor& x);
 
+		// private send method used by the public methods to
+		// actually send the commands they build
+		int m_send(string strCommand);
+
 		// Winsock data structure (needed for init)
 		WSAData m_WSAData;
 

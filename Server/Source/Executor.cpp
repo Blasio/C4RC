@@ -62,59 +62,58 @@ Executor::~Executor()
 void Executor::Say(string strMessage)
 {
 	// Build Say command string & send it to server
-	string strTempBuf = m_strCMDPreamble + string("say ") + strMessage;
-	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
+	m_send(string("say ") + strMessage);
 }
 
 void Executor::Tell(int iClientID, string strMessage)
 {
 	// Build tell command string & send it to server
 	ostringstream ssID;
-	ssID << iClientID << " " << strMessage;
-	string strTempBuf = m_strCMDPreamble + string("tell ") + ssID.str();
-	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
+	ssID << "tell " << iClientID << " " << strMessage;
+	m_send(ssID.str());
 }
 
 void Executor::Kick(string strPlayer, bool bTempBan)
 {
 	// Build kick command string & send it to server
-	string strTempBuf = m_strCMDPreamble + (bTempBan ? string("kick ") : string("onlykick ")) + strPlayer;
-	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
+	m_send((bTempBan ? string("kick ") : string("onlykick ")) + strPlayer);
 }
 
 void Executor::Kick(int iClientID)
 {
 	// Build kick command string & send it to server
 	ostringstream ssID;
-	ssID << iClientID;
-	string strTempBuf = m_strCMDPreamble + string("clientkick ") + ssID.str();
-	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
+	ssID << "clientkick " << iClientID;
+	m_send(ssID.str());
 }
 
 void Executor::ChangeMap(string strMapName)
 {
 	// Build command string to change map & send it to server
-	string strTempBuf = m_strCMDPreamble + string("map ") + strMapName;
-	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
+	m_send(string("map ") + strMapName);
 }
 
 void Executor::ChangeGameType(string strGameType)
 {
 	// Build command string to change gametype & send it to server
-	string strTempBuf = m_strCMDPreamble + string("g_gametype ") + strGameType;
-	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
+	m_send(string("g_gametype ") + strGameType);
 }
 
 void Executor::RestartRound(bool bFastRestart)
 {
 	// Build command string to restart round & send it to server
-	string strTempBuf = m_strCMDPreamble + (bFastRestart ? string("fast_restart ") : string("map_restart"));
-	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
+	m_send((bFastRestart ? string("fast_restart ") : string("map_restart")));
 }
 
 void Executor::MapRotate(void)
 {
 	// Build command string to rotate map & send it to server
-	string strTempBuf = m_strCMDPreamble + string("map_rotate");
-	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
+	m_send("map_rotate");
+}
+
+int Executor::m_send(string strCommand)
+{
+	// Build command string to rotate map & send it to server
+	string strTempBuf = m_strCMDPreamble + strCommand;
+	return(sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server)));
 }
