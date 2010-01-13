@@ -34,10 +34,15 @@ namespace Execution {
 
 		// Winsock data structure (needed for init)
 		WSAData m_WSAData;
-		string m_strServer;
-		hostent * m_ServerHostEnt;
-		string m_strPassword;
-		int m_iPort;
+
+		// Server Socket information (IP & Port)
+		sockaddr_in m_Server;
+
+		// Local socket from which we'll send RCON commands
+		SOCKET m_LocalSocket;
+
+		// Pre-made string used when sending commands
+		string m_strCMDPreamble;
 	};
 
 }

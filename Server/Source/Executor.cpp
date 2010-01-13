@@ -4,50 +4,63 @@
 
 using namespace Execution;
 
-Executor::Executor(string strServerName, int iServerPort, string strRCONPassword)
+Executor::Executor(string strServerName, int iServerPort, string strRCONPassword): m_LocalSocket(INVALID_SOCKET)
 {
+	// Do some basic checks, Server Name required
 	if (strServerName == "")
 		throw std::runtime_error("Executor::Executor(): Server Name needs to be specified");
 
+	// Password Required
 	if (strRCONPassword == "")
 		throw std::runtime_error("Executor::Executor(): RCON Password needs to be specified");
 
+	// Initialize Winsock
 	if (0 != WSAStartup(MAKEWORD(2,2), &m_WSAData))
 		throw std::runtime_error("Executor::Executor(): Failed to initialize winsock library");
 
-	m_ServerHostEnt =  gethostbyname(strServerName.c_str());
+	// Look up the specified server name / ip address
+	hostent * heServer =  gethostbyname(strServerName.c_str());
 
-	if (m_ServerHostEnt == NULL)
+	if (heServer == NULL)
 		throw std::runtime_error("Executor::Executor(): Server Name is invalid");
 	
-	m_strServer = strServerName;
-	m_strPassword = strRCONPassword;
-	m_iPort = iServerPort;
+	if (heServer->h_addrtype != AF_INET)
+		throw std::runtime_error("Executor::Executor(): Don't know how to handle this address type");
 
+	// Copy over the address returned
+	ZeroMemory(&m_Server, sizeof(m_Server));
+	m_Server.sin_family = AF_INET;
+	m_Server.sin_port = htons(iServerPort);
+	m_Server.sin_addr.s_addr = *((ULONG *)heServer->h_addr);
+
+	// Prepare the first part of the string to be sent to RCON
+	// First 4 bytes are 0xFF, then " RCON ", then the RCON password
+	// IN PLAIN TEXT (WTF?). Commands will be appended after this.
+	m_strCMDPreamble = string("     RCON ") + strRCONPassword + string(" ");;
+	m_strCMDPreamble[0] = ~0;
+	m_strCMDPreamble[1] = ~0;
+	m_strCMDPreamble[2] = ~0;
+	m_strCMDPreamble[3] = ~0;
+
+	// Set up a local socket for us
+	m_LocalSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+	if (INVALID_SOCKET == m_LocalSocket)
+		throw std::runtime_error("Executor::Executor(): Failed to create local socket");
 }
 
 Executor::~Executor()
 {
+	if (INVALID_SOCKET != m_LocalSocket)
+		closesocket(m_LocalSocket);
+
 	WSACleanup();
 }
 
 
 void Executor::Say(string strMessage)
 {
-
-	SOCKET s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	sockaddr_in Server;
-
-	Server.sin_family = AF_INET;
-	Server.sin_port = htons(m_iPort);
-	Server.sin_addr.s_addr = *((ULONG *)m_ServerHostEnt->h_addr_list[0]);
-
-	string strTempBuf = string("     RCON ") + m_strPassword + string(" say ") + strMessage;
-	strTempBuf[0] = ~0;
-	strTempBuf[1] = ~0;
-	strTempBuf[2] = ~0;
-	strTempBuf[3] = ~0;
-	int sentbytes = sendto(s, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&Server, sizeof(Server));
-
-	closesocket(s);
+	// Build Say command string & send it to server
+	string strTempBuf = m_strCMDPreamble + string("say ") + strMessage;
+	int sentbytes = sendto(m_LocalSocket, strTempBuf.c_str(), strTempBuf.length(), 0, (sockaddr *)&m_Server, sizeof(m_Server));
 }

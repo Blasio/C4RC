@@ -73,6 +73,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	cin >> strPassword;
 	Executor m_Ex("localhost", 28960, strPassword);
 	m_Ex.Say("Test Message from Console");
+	Sleep(1000);
+	m_Ex.Say("And another one here with ^1C^2o^3l^4o^5u^6r^7.");
 
 	return 0;
 }
