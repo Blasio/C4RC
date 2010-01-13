@@ -60,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ws2_32.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -175,6 +176,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Source\Executor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\LogWatcher.cpp"
 				>
 			</File>
@@ -208,6 +213,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Source\Executor.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Source\LogWatcher.h"
 				>
